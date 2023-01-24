@@ -2,8 +2,85 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-function MainFirst() {
+function MainFirst({ parentFunction }) {
 
+    const [data, setData] = useState([]);
+    const [tutor, setTutor] = useState([]);
+    const location = useLocation()
+
+    // 컨설팅 
+    useEffect(() => {
+        fetch(`/api/admin/Consulting/list`, {
+            method: 'GET',
+        })
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                data[0].md = "컨설팅"
+                setData(data)
+            });
+
+    }, [data]);
+
+    // 클래스      
+    useEffect(() => {
+        fetch(`/api/admin/Class/list`, {
+            method: 'GET',
+        })
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                data[0].md = "클래스"
+                setTutor(data)
+            });
+
+    }, [tutor]);
+
+    // 승인하기
+    function ConsultingApprove(a, b) {
+        if (b === "컨설팅") {
+            fetch(`/api/admin/Consulting/Prove/${a}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                }),
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.result = "success") {
+                        alert('승인되었습니다')
+                    }
+                })
+        }
+        else {
+            fetch(`/api/admin/Class/Prove/${a}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                }),
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.result = "success") {
+                        alert('승인되었습니다')
+                    }
+                })
+        }
+    }
+
+
+    parentFunction(
+        location.pathname === "/Main" ?
+            data.concat(tutor).length : location.pathname === "/Main/Wait" ?
+                data.filter((e) => e.Approve === "N").concat(tutor.filter((e) => e.Approve === "N")).length :
+                data.filter((e) => e.Approve === "Y").concat(tutor.filter((e) => e.Approve === "Y")).length
+    )
 
     return (
         <>
@@ -17,9 +94,70 @@ function MainFirst() {
                 <StateBox>상태</StateBox>
                 <ApproveBox>승인하기</ApproveBox>
             </LoginBox>
+            {location.pathname === "/Main" ?
+                <>
+                    {data.concat(tutor).map((data, index) => (
+                        <ListBox index={index}>
+                            <Programlist onClick={() => console.log(data.id + data.md)}>{index}</Programlist>
+                            <Mentorlist>{data.Name}</Mentorlist>
+                            <Emainlist>{data.User}</Emainlist>
+                            <Phonelist>{data.Phone}</Phonelist>
+                            <Adminlist>{data.Entertime?.substr(0, 10).replace('-', '/').replace('-', '/')}</Adminlist>
+                            <Categorylist>{data.md}</Categorylist>
+                            <Statelist>{data.Approve === "N" ? "승인대기" : "활동중"}</Statelist>
+                            {data.Approve === "N" ?
+                                <Approvelist onClick={() => ConsultingApprove(data.id, data.md)}>승인하기</Approvelist>
+                                :
+                                <Approvelistok>승인완료</Approvelistok>
+                            }
+                        </ListBox>
+                    ))}
+                </>
+                : location.pathname === "/Main/Wait" ?
+                    <>
+                        {data.filter((e) => e.Approve === "N").concat(tutor.filter((e) => e.Approve === "N")).map((data, index) => (
+                            <ListBox index={index}>
+                                <Programlist onClick={() => console.log(data.id + data.md)}>{index}</Programlist>
+                                <Mentorlist>{data.Name}</Mentorlist>
+                                <Emainlist>{data.User}</Emainlist>
+                                <Phonelist>{data.Phone}</Phonelist>
+                                <Adminlist>{data.Entertime?.substr(0, 10).replace('-', '/').replace('-', '/')}</Adminlist>
+                                <Categorylist>{data.md}</Categorylist>
+                                <Statelist>{data.Approve === "N" ? "승인대기" : "활동중"}</Statelist>
+                                {data.Approve === "N" ?
+                                    <Approvelist onClick={() => ConsultingApprove(data.id, data.md)}>승인하기</Approvelist>
+                                    :
+                                    <Approvelistok>승인완료</Approvelistok>
+                                }
+                            </ListBox>
+                        ))}
+                    </>
+                    :
+                    <>
+                        {
+                            data.filter((e) => e.Approve === "Y").concat(tutor.filter((e) => e.Approve === "Y")).map((data, index) => (
+                                <ListBox index={index}>
+                                    <Programlist onClick={() => console.log(data.id + data.md)}>{index}</Programlist>
+                                    <Mentorlist>{data.Name}</Mentorlist>
+                                    <Emainlist>{data.User}</Emainlist>
+                                    <Phonelist>{data.Phone}</Phonelist>
+                                    <Adminlist>{data.Entertime?.substr(0, 10).replace('-', '/').replace('-', '/')}</Adminlist>
+                                    <Categorylist>{data.md}</Categorylist>
+                                    <Statelist>{data.Approve === "N" ? "승인대기" : "활동중"}</Statelist>
+                                    {data.Approve === "N" ?
+                                        <Approvelist onClick={() => ConsultingApprove(data.id, data.md)}>승인하기</Approvelist>
+                                        :
+                                        <Approvelistok>승인완료</Approvelistok>
+                                    }
+                                </ListBox>
+                            ))}
+                    </>
+            }
+
         </>
     );
 }
+
 
 export default MainFirst;
 
@@ -33,6 +171,17 @@ width: 100%;
 height: 26px; 
 background: #F5F5F5;
 margin-top:25px;
+`;
+
+/* 분류 상단박스 */
+const ListBox = styled.div`
+display: flex;
+justify-content:center;
+align-items: center;
+flex-direction:row;
+width: 100%;
+height: 26px; 
+background: #FFFF;
 `;
 
 /* 프로그램 번호 상단박스 */
@@ -136,4 +285,125 @@ display: flex;
 justify-content:center;
 align-items: center;font-size: 14px;
 color: #5C5C5C;
+`;
+
+/* 프로그램 리스트 */
+const Programlist = styled.div`
+width:112px;
+height: 26px; 
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+color: #000000;
+display: flex;
+justify-content:center;
+align-items: center;
+text-decoration-line: underline;
+cursor:pointer;
+`;
+
+/* 멘토명 번호 상단박스 */
+const Mentorlist = styled.div`
+width:138px;
+height: 26px; 
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+color: #000000;
+display: flex;
+justify-content:center;
+align-items: center;
+`;
+
+/* 이메일 번호 상단박스 */
+const Emainlist = styled.div`
+width:260px;
+height: 26px; 
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+color: #000000;
+display: flex;
+justify-content:center;
+align-items: center;
+`;
+
+/* 휴대폰번호  상단박스 */
+const Phonelist = styled.div`
+width:200px;
+height: 26px; 
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+color: #000000;
+display: flex;
+justify-content:center;
+align-items: center;
+`;
+
+/* 신청일  상단박스 */
+const Adminlist = styled.div`
+width:120px;
+height: 26px; 
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+color: #000000;
+display: flex;
+justify-content:center;
+align-items: center;
+`;
+
+/* 프로그램 유형  상단박스 */
+const Categorylist = styled.div`
+width:160px;
+height: 26px; 
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+color: #000000;
+display: flex;
+justify-content:center;
+align-items: center;
+`;
+
+/* 상태  상단박스 */
+const Statelist = styled.div`
+width:95px;
+height: 26px; 
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+color: #000000;
+display: flex;
+justify-content:center;
+align-items: center;
+`;
+
+/* 승인하기  상단박스 */
+const Approvelist = styled.div`
+width:95px;
+height: 26px; 
+font-style: normal;
+font-weight: 400;
+display: flex;
+justify-content:center;
+align-items: center;
+font-size: 14px;
+color: #000000;
+text-decoration-line: underline;
+cursor:pointer;
+`;
+
+/* 승인완료  상단박스 */
+const Approvelistok = styled.div`
+width:95px;
+height: 26px; 
+font-style: normal;
+font-weight: 400;
+display: flex;
+justify-content:center;
+align-items: center;
+font-size: 14px;
+color: #32A751;
 `;

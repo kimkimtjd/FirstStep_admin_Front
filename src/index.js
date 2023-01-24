@@ -13,6 +13,8 @@ root.render(
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/Main" element={<Main/>} />
+        <Route path="/Main/Wait" element={<Main/>} />
+        <Route path="/Main/Active" element={<Main/>} />
       </Routes>
     </Router>
   </React.StrictMode>

@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { useEffect, useState } from "react";
 import './Main.css';
 import MainFirst from "./Main_First";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function Main() {
 
@@ -9,6 +10,30 @@ function Main() {
     const [q2, setQ2] = useState("멘토관리"); // 멘토관리 
     const [filter, setfilter] = useState("전체"); // RadioBtn 
     const [name, setName] = useState("");
+    const [post, setPost] = useState("");
+    const navigation = useNavigate()
+
+    const parentFunction = (x) => {
+        setPost(x);
+      };
+
+    // 전체 클릭 
+    function Totalnavigate(){
+        setfilter("전체")
+        navigation('/Main')
+    }
+
+    // 승인대기 클릭  
+    function Wait(){
+        setfilter("승인대기")
+        navigation('/Main/Wait')
+    }
+
+    // 활동중 클릭  
+    function Active(){
+        setfilter("활동중")
+        navigation('/Main/Active')
+    }
 
     return (
         <div>
@@ -32,17 +57,17 @@ function Main() {
                         <Topspan>상태필터</Topspan>
                         <label>
                             <input type="radio" name="total" value="total"
-                                checked={filter === "전체" ? true : false} onClick={() => setfilter("전체")} />
+                                checked={filter === "전체" ? true : false} onClick={() => Totalnavigate()} />
                             <span>전체</span>
                         </label>
                         <label>
                             <input type="radio" name="wait" value="wait"
-                                checked={filter === "승인대기" ? true : false} onClick={() => setfilter("승인대기")} />
+                                checked={filter === "승인대기" ? true : false} onClick={() => Wait()} />
                             <span>승인대기</span>
                         </label>
                         <label>
                             <input type="radio" name="active" value="active"
-                                checked={filter === "활동중" ? true : false} onClick={() => setfilter("활동중")} />
+                                checked={filter === "활동중" ? true : false} onClick={() => Active()} />
                             <span>활동중</span>
                         </label>
                         <Topspan>검색필터</Topspan>
@@ -64,11 +89,11 @@ function Main() {
                         <div style={{ display:"flex" , flexDirection:"row" , width:"200px" , justifyContent:"space-between"}}>
                             <div>
                                 <span style={{ color:"#757575" , fontSize:"14px" , marginRight:"5px"}}>총</span>
-                                <span style={{ color:"black" , fontSize:"14px" , fontWeight:"bold"}}>{"data"}건</span>
+                                <span style={{ color:"black" , fontSize:"14px" , fontWeight:"bold"}}>{post}건</span>
                             </div>
                             <div style={{ marginLeft:"16px"}}>
                                 <span style={{ color:"#757575" , fontSize:"14px" , marginRight:"5px"}}>검색결과</span>
-                                <span style={{ color:"black" , fontSize:"14px" , fontWeight:"bold"}}>{"data"}개</span>
+                                <span style={{ color:"black" , fontSize:"14px" , fontWeight:"bold"}}>{post}개</span>
                             </div>
                         </div>
                         <div style={{ display:"flex" , flexDirection:"row" , width:"228px" , justifyContent:"space-between"}}>
@@ -76,7 +101,7 @@ function Main() {
                             <Excel>프로그램 추가</Excel>
                         </div>
                     </Search>
-                    <MainFirst/>
+                    <MainFirst  parentFunction={parentFunction}/>
                 </Topinner>
             </Total>
         </div>
