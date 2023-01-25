@@ -1,12 +1,13 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Navigate } from "react-router-dom";
 
 function MainFirst({ parentFunction }) {
 
     const [data, setData] = useState([]);
     const [tutor, setTutor] = useState([]);
     const location = useLocation()
+    const navigation = useNavigate()
 
     // 컨설팅 
     useEffect(() => {
@@ -82,6 +83,16 @@ function MainFirst({ parentFunction }) {
                 data.filter((e) => e.Approve === "Y").concat(tutor.filter((e) => e.Approve === "Y")).length
     )
 
+    // 상세보기 이동
+    function NaviDetail(a, b) {
+        if (b === "컨설팅") {
+            navigation(`/Consulting/Detail/${a}`)
+        }
+        else if (b === "클래스") {
+            navigation(`/Class/Detail/${a}`)
+        }
+    }
+
     return (
         <>
             <LoginBox>
@@ -94,50 +105,15 @@ function MainFirst({ parentFunction }) {
                 <StateBox>상태</StateBox>
                 <ApproveBox>승인하기</ApproveBox>
             </LoginBox>
-            {location.pathname === "/Main" ?
+            {data.length === 0 || tutor.length === 0 ?
+                <>로딩중</>
+                :
                 <>
-                    {data.concat(tutor).map((data, index) => (
-                        <ListBox index={index}>
-                            <Programlist onClick={() => console.log(data.id + data.md)}>{index}</Programlist>
-                            <Mentorlist>{data.Name}</Mentorlist>
-                            <Emainlist>{data.User}</Emainlist>
-                            <Phonelist>{data.Phone}</Phonelist>
-                            <Adminlist>{data.Entertime?.substr(0, 10).replace('-', '/').replace('-', '/')}</Adminlist>
-                            <Categorylist>{data.md}</Categorylist>
-                            <Statelist>{data.Approve === "N" ? "승인대기" : "활동중"}</Statelist>
-                            {data.Approve === "N" ?
-                                <Approvelist onClick={() => ConsultingApprove(data.id, data.md)}>승인하기</Approvelist>
-                                :
-                                <Approvelistok>승인완료</Approvelistok>
-                            }
-                        </ListBox>
-                    ))}
-                </>
-                : location.pathname === "/Main/Wait" ?
-                    <>
-                        {data.filter((e) => e.Approve === "N").concat(tutor.filter((e) => e.Approve === "N")).map((data, index) => (
-                            <ListBox index={index}>
-                                <Programlist onClick={() => console.log(data.id + data.md)}>{index}</Programlist>
-                                <Mentorlist>{data.Name}</Mentorlist>
-                                <Emainlist>{data.User}</Emainlist>
-                                <Phonelist>{data.Phone}</Phonelist>
-                                <Adminlist>{data.Entertime?.substr(0, 10).replace('-', '/').replace('-', '/')}</Adminlist>
-                                <Categorylist>{data.md}</Categorylist>
-                                <Statelist>{data.Approve === "N" ? "승인대기" : "활동중"}</Statelist>
-                                {data.Approve === "N" ?
-                                    <Approvelist onClick={() => ConsultingApprove(data.id, data.md)}>승인하기</Approvelist>
-                                    :
-                                    <Approvelistok>승인완료</Approvelistok>
-                                }
-                            </ListBox>
-                        ))}
-                    </>
-                    :
-                    <>
-                        {
-                            data.filter((e) => e.Approve === "Y").concat(tutor.filter((e) => e.Approve === "Y")).map((data, index) => (
+                    {location.pathname === "/Main" ?
+                        <>
+                            {data.concat(tutor).map((data, index) => (
                                 <ListBox index={index}>
-                                    <Programlist onClick={() => console.log(data.id + data.md)}>{index}</Programlist>
+                                    <Programlist onClick={() => NaviDetail(data.id, data.md)}>{index}</Programlist>
                                     <Mentorlist>{data.Name}</Mentorlist>
                                     <Emainlist>{data.User}</Emainlist>
                                     <Phonelist>{data.Phone}</Phonelist>
@@ -151,7 +127,48 @@ function MainFirst({ parentFunction }) {
                                     }
                                 </ListBox>
                             ))}
-                    </>
+                        </>
+                        : location.pathname === "/Main/Wait" ?
+                            <>
+                                {data.filter((e) => e.Approve === "N").concat(tutor.filter((e) => e.Approve === "N")).map((data, index) => (
+                                    <ListBox index={index}>
+                                        <Programlist onClick={() => NaviDetail(data.id, data.md)}>{index}</Programlist>
+                                        <Mentorlist>{data.Name}</Mentorlist>
+                                        <Emainlist>{data.User}</Emainlist>
+                                        <Phonelist>{data.Phone}</Phonelist>
+                                        <Adminlist>{data.Entertime?.substr(0, 10).replace('-', '/').replace('-', '/')}</Adminlist>
+                                        <Categorylist>{data.md}</Categorylist>
+                                        <Statelist>{data.Approve === "N" ? "승인대기" : "활동중"}</Statelist>
+                                        {data.Approve === "N" ?
+                                            <Approvelist onClick={() => ConsultingApprove(data.id, data.md)}>승인하기</Approvelist>
+                                            :
+                                            <Approvelistok>승인완료</Approvelistok>
+                                        }
+                                    </ListBox>
+                                ))}
+                            </>
+                            :
+                            <>
+                                {
+                                    data.filter((e) => e.Approve === "Y").concat(tutor.filter((e) => e.Approve === "Y")).map((data, index) => (
+                                        <ListBox index={index}>
+                                            <Programlist onClick={() => NaviDetail(data.id, data.md)}>{index}</Programlist>
+                                            <Mentorlist>{data.Name}</Mentorlist>
+                                            <Emainlist>{data.User}</Emainlist>
+                                            <Phonelist>{data.Phone}</Phonelist>
+                                            <Adminlist>{data.Entertime?.substr(0, 10).replace('-', '/').replace('-', '/')}</Adminlist>
+                                            <Categorylist>{data.md}</Categorylist>
+                                            <Statelist>{data.Approve === "N" ? "승인대기" : "활동중"}</Statelist>
+                                            {data.Approve === "N" ?
+                                                <Approvelist onClick={() => ConsultingApprove(data.id, data.md)}>승인하기</Approvelist>
+                                                :
+                                                <Approvelistok>승인완료</Approvelistok>
+                                            }
+                                        </ListBox>
+                                    ))}
+                            </>
+                    }
+                </>
             }
 
         </>

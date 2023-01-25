@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import Main from './Main/Main';
+import ConsultingDetail from './Mentor/ConsultingDetail';
+import ClassDetail from './Mentor/ClassDetail';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 
@@ -15,6 +17,8 @@ root.render(
         <Route path="/Main" element={<Main/>} />
         <Route path="/Main/Wait" element={<Main/>} />
         <Route path="/Main/Active" element={<Main/>} />
+        <Route path="/Consulting/Detail/:id" element={<ConsultingDetail/>} />
+        <Route path="/Class/Detail/:id" element={<ClassDetail/>} />
       </Routes>
     </Router>
   </React.StrictMode>
