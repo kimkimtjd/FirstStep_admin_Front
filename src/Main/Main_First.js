@@ -18,8 +18,10 @@ function MainFirst({ parentFunction }) {
                 return response.json();
             })
             .then(data => {
-                data[0].md = "컨설팅"
-                setData(data)
+                for(var i = 0 ; i<data.length ; i++){
+                    data[i].md = "컨설팅"
+                }
+                setData(data)    
             });
 
     }, [data]);
@@ -33,7 +35,9 @@ function MainFirst({ parentFunction }) {
                 return response.json();
             })
             .then(data => {
-                data[0].md = "클래스"
+                for(var i = 0 ; i<data.length ; i++){
+                    data[i].md = "클래스"
+                }
                 setTutor(data)
             });
 
