@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import './Main.css';
 import MainFirst from "./Main_First";
 import { useNavigate, useLocation } from "react-router-dom";
+import MainSecond from "./Main_Second";
 
 function Main() {
 
@@ -12,34 +13,62 @@ function Main() {
     const [name, setName] = useState("");
     const [post, setPost] = useState("");
     const navigation = useNavigate()
+    const location = useLocation()
 
     const parentFunction = (x) => {
         setPost(x);
       };
 
-    // 전체 클릭 
+      useEffect(() => {
+       {location.pathname.includes('Main') ? 
+            setQ2("멘토관리") : setQ2("입금관리")  
+      }
+    }, []);
+
+
+
+    // 전체 클릭 - 멘토관리
     function Totalnavigate(){
         setfilter("전체")
         navigation('/Main')
     }
 
-    // 승인대기 클릭  
+    // 승인대기 클릭 - 멘토관리  
     function Wait(){
         setfilter("승인대기")
         navigation('/Main/Wait')
     }
 
-    // 활동중 클릭  
+    // 활동중 클릭  - 멘토관리
     function Active(){
         setfilter("활동중")
         navigation('/Main/Active')
     }
 
+    // 전체 클릭 - 입금내역
+    function Paynavigate(){
+        setfilter("전체")
+        navigation('/pay')
+    }
+
+    // 승인대기 클릭  - 입금내역
+    function PayWait(){
+        setfilter("입금확인")
+        navigation('/pay/Wait')
+    }
+
+    // 활동중 클릭 - 입금내역  
+    function PayActive(){
+        setfilter("입금완료")
+        navigation('/pay/end')
+    }
+
+
     return (
         <div>
             <LoginBox>
-                <TopLeft value={q2} onChange={(e) => setQ2(e.target.value)}>
-                    <option value="멘토관리" >멘토관리</option>
+                <TopLeft value={q2} onChange={(e) => setQ2(e.target.value)} onClick={()=> q2 === "멘토관리" ? navigation('/Main') : navigation('/pay')}>
+                    <option value="멘토관리">멘토관리</option>
                     <option value="입금관리">입금관리</option>
                 </TopLeft>
 
@@ -54,8 +83,11 @@ function Main() {
                 <Topinner>
 
                     <Topcontent>
+
                         <Topspan>상태필터</Topspan>
-                        <label>
+                        {location.pathname.includes('Main') ?
+                            <>
+                             <label>
                             <input type="radio" name="total" value="total"
                                 checked={filter === "전체" ? true : false} onClick={() => Totalnavigate()} />
                             <span>전체</span>
@@ -70,6 +102,28 @@ function Main() {
                                 checked={filter === "활동중" ? true : false} onClick={() => Active()} />
                             <span>활동중</span>
                         </label>
+                            </>
+                            :
+                            <>
+                             <label>
+                            <input type="radio" name="total" value="total"
+                                checked={filter === "전체" ? true : false} onClick={() => Paynavigate()} />
+                            <span>전체</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="wait" value="wait"
+                                checked={filter === "입금확인" ? true : false} onClick={() => PayWait()} />
+                            <span>입금확인</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="active" value="active"
+                                checked={filter === "입금완료" ? true : false} onClick={() => PayActive()} />
+                            <span>입금완료</span>
+                        </label>
+                            </>
+                        }
+                       
+
                         <Topspan>검색필터</Topspan>
                         <FilterName>
                             <span>이름</span>
@@ -101,7 +155,12 @@ function Main() {
                             <Excel>프로그램 추가</Excel>
                         </div>
                     </Search>
+                    {location.pathname.includes('Main') ? 
                     <MainFirst  parentFunction={parentFunction}/>
+                        :
+                    <MainSecond parentFunction={parentFunction}/>
+                    }
+
                 </Topinner>
             </Total>
         </div>

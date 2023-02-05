@@ -24,7 +24,7 @@ function MainFirst({ parentFunction }) {
                 setData(data)    
             });
 
-    }, [data]);
+    }, [data , tutor]);
 
     // 클래스      
     useEffect(() => {
@@ -41,7 +41,7 @@ function MainFirst({ parentFunction }) {
                 setTutor(data)
             });
 
-    }, [tutor]);
+    }, [tutor,data]);
 
     // 승인하기
     function ConsultingApprove(a, b) {
