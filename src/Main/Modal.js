@@ -1,62 +1,96 @@
 import React from "react";
 import styled from "styled-components";
-import { useNavigate , useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 function Modal({ onClose }) {
 
-    const navigate = useNavigate();
-    const location = useLocation();
-  // const handleClose = () => {
-  //   onClose?.();
-  //   navigate('/Login');
-  // };
-  console.log(location.pathname.split("/")[3])
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [data, setData] = useState("");
+
+  const handleClose = () => {
+    onClose?.();
+    navigate('/pay');
+  };
+
+
+  //    // 컨설팅  - 멘토 계좌번호 및 닉네임
+  //  location.pathname.split("/")[3] - 파라미터   
+  useEffect(() => {
+    fetch(`/api/admin/pay/detail/${location.pathname.split("/")[3]}`, {
+      method: 'GET',
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(data => {
+        setData(data[0])
+        // console.log(data)
+        // console.log(data.filter((e) => e.pay_yn === "N").length)
+      });
+
+  }, [data]);
 
   return (
-      <Overlay>
-        <ModalWrap>
-          <Contents>
-            <Text>멘토계좌</Text>
-            {/* <Line/> */}
-            
-            <div style={{ width:"366px" , height:"86px" , display:"flex" , flexDirection:"column" , marginTop:"20px"}}>
-              <span style={{ fontSize:"14px" , fontWeight:"400" , color:"#424242"}}>멘토닉네임</span>
-              <div  style={{ width:"100%" , height:"40px" , display:"flex" , border:"1px solid #DBDBDB" , borderRadius:"8px"}}>
+    <Overlay onClick={() => handleClose()}>
+      <ModalWrap>
+        <Contents>
+          <Text>멘토계좌</Text>
+          {/* <Line/> */}
 
-              </div>
+          <div style={{ width: "366px", height: "86px", display: "flex", flexDirection: "column", marginTop: "20px" }}>
+            <span style={{ fontSize: "14px", fontWeight: "400", color: "#424242" }}>멘토닉네임</span>
+            <div style={{
+              width: "100%", height: "40px", display: "flex", border: "1px solid #DBDBDB", borderRadius: "8px", alignItems: "center",
+              fontSize: "14px", fontWeight: "400" , paddingLeft:"16px"
+            }}>
+              {data.Nickname}
             </div>
+          </div>
 
-            <div style={{ width:"366px" , height:"86px" , display:"flex" , flexDirection:"column" , marginTop:"20px"}}>
-              <span style={{ fontSize:"14px" , fontWeight:"400" , color:"#424242"}}>이름</span>
-              <div  style={{ width:"100%" , height:"40px" , display:"flex" , border:"1px solid #DBDBDB" , borderRadius:"8px"}}>
-
-              </div>
+          <div style={{ width: "366px", height: "86px", display: "flex", flexDirection: "column", marginTop: "20px" }}>
+            <span style={{ fontSize: "14px", fontWeight: "400", color: "#424242" }}>이름</span>
+            <div style={{
+              width: "100%", height: "40px", display: "flex", border: "1px solid #DBDBDB", borderRadius: "8px", alignItems: "center",
+              fontSize: "14px", fontWeight: "400", paddingLeft:"16px"
+            }}>
+              {data.pay?.split("-")[2]}
             </div>
+          </div>
 
-            <div style={{ width:"366px" , height:"86px" , display:"flex" , flexDirection:"column" , marginTop:"20px"}}>
-              <span style={{ fontSize:"14px" , fontWeight:"400" , color:"#424242"}}>은행</span>
-              <div  style={{ width:"100%" , height:"40px" , display:"flex" , border:"1px solid #DBDBDB" , borderRadius:"8px"}}>
-
-              </div>
+          <div style={{ width: "366px", height: "86px", display: "flex", flexDirection: "column", marginTop: "20px" }}>
+            <span style={{ fontSize: "14px", fontWeight: "400", color: "#424242" }}>은행</span>
+            <div style={{
+              width: "100%", height: "40px", display: "flex", border: "1px solid #DBDBDB", borderRadius: "8px", alignItems: "center",
+              fontSize: "14px", fontWeight: "400", paddingLeft:"16px"
+            }}>
+              {data.pay?.split("-")[0]}
             </div>
+          </div>
 
-            <div style={{ width:"366px" , height:"86px" , display:"flex" , flexDirection:"column" , marginTop:"20px"}}>
-              <span style={{ fontSize:"14px" , fontWeight:"400" , color:"#424242"}}>계좌번호</span>
-              <div  style={{ width:"100%" , height:"40px" , display:"flex" , border:"1px solid #DBDBDB" , borderRadius:"8px"}}>
-
-              </div>
+          <div style={{ width: "366px", height: "86px", display: "flex", flexDirection: "column", marginTop: "20px" }}>
+            <span style={{ fontSize: "14px", fontWeight: "400", color: "#424242" }}>계좌번호</span>
+            <div style={{
+              width: "100%", height: "40px", display: "flex", border: "1px solid #DBDBDB", borderRadius: "8px", alignItems: "center",
+              fontSize: "14px", fontWeight: "400", paddingLeft:"16px"
+            }}>
+              {data.pay?.split("-")[1]}
             </div>
+          </div>
 
-            <div style={{ width:"366px" , height:"86px" , display:"flex" , flexDirection:"column" , marginTop:"20px"}}>
-              <span style={{ fontSize:"14px" , fontWeight:"400" , color:"#424242"}}>이메일</span>
-              <div  style={{ width:"100%" , height:"40px" , display:"flex" , border:"1px solid #DBDBDB" , borderRadius:"8px"}}>
-
-              </div>
+          <div style={{ width: "366px", height: "86px", display: "flex", flexDirection: "column", marginTop: "20px" }}>
+            <span style={{ fontSize: "14px", fontWeight: "400", color: "#424242" }}>이메일</span>
+            <div style={{
+              width: "100%", height: "40px", display: "flex", border: "1px solid #DBDBDB", borderRadius: "8px", alignItems: "center",
+              fontSize: "14px", fontWeight: "400", paddingLeft:"16px"
+            }}>
+              {data.email}
             </div>
-          </Contents>
-        </ModalWrap>
-      </Overlay>
+          </div>
+        </Contents>
+      </ModalWrap>
+    </Overlay>
   );
 }
 

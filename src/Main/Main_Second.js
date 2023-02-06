@@ -41,9 +41,32 @@ function MainSecond({ parentFunction }) {
     //  계좌클릭시
     function ModalOepn(a) {
         setModalIsOpen(true)
-        console.log(a)
+        // console.log(a)
         navigation(`/pay/detail/${a}`)
     }
+
+    // 승인하기
+    function PayApprove(a) {
+
+        // console.log(a)
+        fetch(`/api/admin/pay/Prove/${a}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+            }),
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.result = "success") {
+                    alert('승인되었습니다')
+                }
+            })
+    }
+
+
+
 
     return (
         <>
@@ -73,7 +96,7 @@ function MainSecond({ parentFunction }) {
                                     <Categorylist>{data.Category}</Categorylist>
                                     <Approvelist onClick={() => ModalOepn(data.email)}>계좌</Approvelist>
                                     {data.pay_yn === "N" ?
-                                        <Approvelist>입금확인</Approvelist>
+                                        <Approvelist onClick={() => PayApprove(data.id)}>입금확인</Approvelist>
                                         :
                                         <Approvelistok>입금완료</Approvelistok>
                                     }
@@ -84,26 +107,6 @@ function MainSecond({ parentFunction }) {
                             <>
                                 {data.filter((e) => e.pay_yn === "N").map((data, index) => (
                                     <ListBox>
-                                    <Programlist>{index}</Programlist>
-                                    <Mentorlist>{data.Nickname}</Mentorlist>
-                                    <Emainlist>{data.email}</Emainlist>
-                                    <Phonelist>{data.Pay?.split("-")[0]}</Phonelist>
-                                    <Adminlist>{data.Pay?.split("-")[1]}</Adminlist>
-                                    <Categorylist>{data.Category}</Categorylist>
-                                    <Approvelist onClick={() => ModalOepn(data.pay?.split("-")[2])}>계좌</Approvelist>
-                                    {data.pay_yn === "N" ?
-                                        <Approvelist>입금확인</Approvelist>
-                                        :
-                                        <Approvelistok>입금완료</Approvelistok>
-                                    }
-                                </ListBox>
-                                ))}
-                            </>
-                            :
-                            <>
-                                {
-                                    data.filter((e) => e.pay_yn === "Y").map((data, index) => (
-                                        <ListBox>
                                         <Programlist>{index}</Programlist>
                                         <Mentorlist>{data.Nickname}</Mentorlist>
                                         <Emainlist>{data.email}</Emainlist>
@@ -112,11 +115,31 @@ function MainSecond({ parentFunction }) {
                                         <Categorylist>{data.Category}</Categorylist>
                                         <Approvelist onClick={() => ModalOepn(data.pay?.split("-")[2])}>계좌</Approvelist>
                                         {data.pay_yn === "N" ?
-                                            <Approvelist>입금확인</Approvelist>
+                                            <Approvelist onClick={() => PayApprove(data.id)}>입금확인</Approvelist>
                                             :
                                             <Approvelistok>입금완료</Approvelistok>
                                         }
                                     </ListBox>
+                                ))}
+                            </>
+                            :
+                            <>
+                                {
+                                    data.filter((e) => e.pay_yn === "Y").map((data, index) => (
+                                        <ListBox>
+                                            <Programlist>{index}</Programlist>
+                                            <Mentorlist>{data.Nickname}</Mentorlist>
+                                            <Emainlist>{data.email}</Emainlist>
+                                            <Phonelist>{data.Pay?.split("-")[0]}</Phonelist>
+                                            <Adminlist>{data.Pay?.split("-")[1]}</Adminlist>
+                                            <Categorylist>{data.Category}</Categorylist>
+                                            <Approvelist onClick={() => ModalOepn(data.pay?.split("-")[2])}>계좌</Approvelist>
+                                            {data.pay_yn === "N" ?
+                                                <Approvelist onClick={() => PayApprove(data.id)}>입금확인</Approvelist>
+                                                :
+                                                <Approvelistok>입금완료</Approvelistok>
+                                            }
+                                        </ListBox>
                                     ))}
                             </>
                     }
