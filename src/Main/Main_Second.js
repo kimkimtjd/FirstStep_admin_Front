@@ -47,6 +47,7 @@ function MainSecond({ parentFunction }) {
 
     // 승인하기
     function PayApprove(a) {
+        var timess = new Date();
 
         // console.log(a)
         fetch(`/api/admin/pay/Prove/${a}`, {
@@ -55,6 +56,7 @@ function MainSecond({ parentFunction }) {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
+                time:timess
             }),
         })
             .then(res => res.json())
